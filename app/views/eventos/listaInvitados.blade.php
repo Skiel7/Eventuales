@@ -8,7 +8,7 @@
 		<thead>
 			<tr>
 				
-				<th><label for="Invitees_email" class="required">Email <span class="required">*</span></label></th>
+				<th><label for="Invitees_email" class="required">Nombre <span class="required">*</span></label></th>
 				<th><label class="inline" >Organizador</label></th>
 				<th><label class="inline" >Asistirá</label></th>
 				<th><label class="inline" >Adultos</label></th>
@@ -24,7 +24,10 @@
 		<tbody>
 				@foreach ($listaDeInvitados as $invitado )
 				<tr>
-					<td>{{$invitado->email}}</td>
+					<td>
+					<?php $user=Usuario::where('id','=',$invitado->idusuario)->get()[0]; ?>
+													{{$user->username}} 
+					</td>
 		            <td>@if ($invitado->rol == 0) Si @else No @endif</td>
 					<td>@if ($invitado->confirmado ==1) Confirmado @else No Confirmado @endif</td>
 					<td>{{$invitado->adultos}}</td>

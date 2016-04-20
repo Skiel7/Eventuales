@@ -19,7 +19,8 @@
 							@foreach ($listaDeInvitados as $invitado)
 								@if ($invitado->idusuario == $itemok->idusuario)
 									@if($item->id == $itemok->iditem)
-										{{$invitado->email}}
+										<?php $user=Usuario::where('id','=',$invitado->idusuario)->get()[0]; ?>
+													{{$user->username}} <span>: {{$itemok->cantidad}}</span> 
 									@endif	
 								@endif
 							@endforeach
