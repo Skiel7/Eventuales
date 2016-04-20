@@ -131,7 +131,7 @@ class UsuarioController extends BaseController {
 		$emailR= Input::get('email');
 		$reglas=array(
 			'username' => 'required|min:3|max:10|unique:usuarios', // el nickname sera unico
-			'apellido'=>'required|min:3|max:10',
+			'apellido'=>'required|min:3|max:20',
 			'email' => 'required|email|unique:usuarios', //el mail sera unico
 			'password' => 'required|min:4|max:10',
 			'verificacion'=>'same:password',
@@ -153,28 +153,39 @@ class UsuarioController extends BaseController {
 			
 			if ($validator->fails())
 			{
-				//$usr=Usuario::find($emailR);
-				$usr = Usuario::where('email','=',$emailR)->get()[0];  //obtengo la tupla del usuario con ese mail.
-				if ($usr->username=='')
+				$CU=0;
+				$listaDeUsuarioo= Usuario::where('email','=',$emailR)->get();
+				foreach ($listaDeUsuarioo as $usrr) //este foreach me sirve para saber si existe o no un usuario en la tabla. Si existe da 1, sino da 0
 				{
-						//return 'ENTRO'; ENTRO AL IF
-					$idinvitado=$usr->id;
-					
-					$emailobtenido=$usr->email;
-					
-					$datosR = array('emailobtenido'=>$emailobtenido,  'idInvitado'=>$usr->id);		
-					//return 'ENTRO';					
-					Mail::send('emails.invitaregRECORDATORIO', $datosR, function($message) use ($datosR) //se envia el mail
-					{
-					   $message->from('eventualesweb@gmail.com', 'Eventuales');
-						$message->to($datosR['emailobtenido'])->subject('Eventuales-Recordatorio registro por invitacion');
-					});
-					return Redirect::back()->withErrors($validator)->withInput()-> with('registro', 'Le enviamos un mail. Por favor revise su casilla de correo.');
+					$CU=$CU+1; //si existe el mail me da solo 1
 				}
-							
-			
+				//$usr=Usuario::find($emailR);
+				if ($CU == 1) //si existe
+				{
+						$usr = Usuario::where('email','=',$emailR)->get()[0];  //obtengo la tupla del usuario con ese mail.	
+						//return $usr;
+						if ($usr->username=='')
+						{								
+							$idinvitado=$usr->id;			
+							$emailobtenido=$usr->email;			
+							$datosR = array('emailobtenido'=>$emailobtenido,  'idInvitado'=>$usr->id);		
+							//return 'ENTRO';					
+							Mail::send('emails.invitaregRECORDATORIO', $datosR, function($message) use ($datosR) //se envia el mail
+							{
+								$message->from('eventualesweb@gmail.com', 'Eventuales');
+								$message->to($datosR['emailobtenido'])->subject('Eventuales-Recordatorio registro por invitacion');
+							});
+							return Redirect::back()->withErrors($validator)->withInput()-> with('registro', 'Le enviamos un mail. Por favor revise su casilla de correo.');
+						}
+						else 
+						{
+						return Redirect::back()->withErrors($validator)->withInput()-> with('registro', 'Revise los datos ingresados');
+						}
+				}
+				if ($CU == 0)			
+				{
 				return Redirect::back()->withErrors($validator)->withInput()-> with('registro', 'Revise los datos ingresados');
-				
+				}
 			}
 			else
 			{ 
