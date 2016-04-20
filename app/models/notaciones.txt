@@ -1,0 +1,11 @@
+﻿si un modelo se llama usuario hace referencia a una tabla que se llama usuarios, es una convención.
+es decir las tablas van en plural y los modelos en singular 
+
+//Debe existir un modelo por tabla.
+
+sobre  el modelo Usuario.php, porque ase referencia a una tabla 'users' ? si no tenemos una tabla users.
+
+//fue la modificacion que te conte. Usuario.php se traspapelo por user y quedaba de la siguiente manera:
+class Usuario extends..... //nombre igual al archivo que creamos.
+protected $table="usuarios"// tabla en plural, referencia.
+
